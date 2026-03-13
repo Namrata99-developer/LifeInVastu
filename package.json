@@ -1,0 +1,26 @@
+{
+  "name": "lifeinvastu",
+  "version": "1.0.0",
+  "description": "Hotel searching web app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Namrata99-developer/LifeInVastu.git"
+  },
+  "keywords": [],
+  "author": "Namrata Ghosh",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Namrata99-developer/LifeInVastu/issues"
+  },
+  "homepage": "https://github.com/Namrata99-developer/LifeInVastu#readme",
+  "dependencies": {
+    "ejs": "^5.0.1",
+    "express": "^5.2.1",
+    "mongoose": "^9.3.0"
+  }
+}
