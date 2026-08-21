@@ -42,10 +42,15 @@ app.get("/listings/new", (req, res) => {
 
 //create route
 
-app.post("/listings", async (req, res) => {
-    const newListing = new Listing(req.body.listing);
-    await newListing.save();
-    res.redirect("/listings");
+app.post("/listings", async (req, res, next) => {
+    try {
+        const newListing = new Listing(req.body.listing);
+        await newListing.save();
+        res.redirect("/listings");
+    } catch (err) {
+        next(err);
+    }
+
 });
 
 //show route
@@ -94,6 +99,9 @@ app.delete("/listings/:id", async (req, res) => {
 //     console.log("Sample was saved");
 //     res.send("Sucsessful testing");
 // });
+app.use((err, req, res, next) => {
+    res.send("something went wrong !")
+});
 
 app.get("/", (req, res) => {
     res.send("Hi ! I'm root");
