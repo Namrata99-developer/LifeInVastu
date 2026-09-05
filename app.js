@@ -11,6 +11,9 @@ const ExpressError = require("./utils/ExpressError.js");
 const { listingSchema, reviewSchema } = require("./schema.js");
 const Review = require("./models/review.js");
 
+const session = require("express-session");
+const flash = require("connect-flash");
+
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
@@ -34,11 +37,30 @@ async function main() {
 
 let port = 8080;
 
+const sessionOptions = {
+    secret: "mysupersecretcode",
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+        maxAge: 1000 * 60 * 60 * 24 * 7,
+        httpOnly: true
+    }
+};
+
 
 app.get("/", (req, res) => {
     res.send("Hi ! I'm root");
 });
 
+
+app.use(session(sessionOptions));
+app.use(flash());
+
+app.use((req, res, next) => {
+    res.locals.success = req.flash("success");
+    next();
+});
 // const validateListing = (req, res, next) => {
 
 //     let { error } = listingSchema.validate(req.body);
