@@ -43,8 +43,8 @@
         </div>
         <% }%>
             <div class="col-8 offset-3 mb-3">
-                <hr>
                 <% if(currentUser) { %>
+                    <hr>
                     <h4>Leave a Review</h4>
                     <form action="/listings/<%=listing.id%>/reviews" method="POST" novalidate class="needs-validation">
 
@@ -75,28 +75,73 @@
                     </form>
                     <hr>
                     <% } %>
-                        <p><b>All Reviews</b></p>
-                        <div class="row">
+                        <% if(listing.reviews.length>0){ %>
+                            <div class="row">
+                                <p><b>All Reviews</b></p>
 
-                            <% for (let review of listing.reviews) { %>
-                                <div class="card col-5 ms-3 mb-3">
-                                    <div class="card-body">
-                                        <h5 class="card-title">
-                                            @ <%= review.author.username %>
-                                        </h5>
-                                        <p class="starability-result card-text" data-rating="<%= review.rating %>">
-                                        </p>
-                                        <p class="card-text">
-                                            <strong>Comment:</strong>
-                                            <%= review.comment %>
-                                        </p>
+                                <% for (let review of listing.reviews) { %>
+                                    <div class="card col-5 ms-3 mb-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title">
+                                                @ <%= review.author.username %>
+                                            </h5>
+                                            <p class="starability-result card-text" data-rating="<%= review.rating %>">
+                                            </p>
+                                            <p class="card-text">
+                                                <strong>Comment:</strong>
+                                                <%= review.comment %>
+                                            </p>
+                                        </div>
+                                        <form class="mb-3" method="POST"
+                                            action="/listings/<%=listing._id%>/reviews/<%=review._id%>?_method=DELETE">
+                                            <button class="btn btn-sm btn-dark">Delete</button>
+                                        </form>
                                     </div>
-                                    <form class="mb-3" method="POST"
-                                        action="/listings/<%=listing._id%>/reviews/<%=review._id%>?_method=DELETE">
-                                        <button class="btn btn-sm btn-dark">Delete</button>
-                                    </form>
-                                </div>
-                                <% } %>
-                        </div>
+                                    <% } %>
+                            </div>
+                            <%}%>
             </div>
+
+            <div class="col-6 offset-3 mb-3">
+                <h3>Where will you be?</h3>
+                <div id="map" data-coordinates='<%= JSON.stringify(listing.geometry.coordinates) %>'></div>
+            </div>
+
+            <style>
+                #map {
+                    height: 400px;
+                    width: 100%;
+                }
+            </style>
+
+            <script type="module">
+
+                import * as maplibregl from
+                    "https://unpkg.com/maplibre-gl@6.9.0/dist/maplibre-gl.mjs";
+
+
+                const mapElement = document.getElementById("map");
+
+                const coordinates = JSON.parse(mapElement.dataset.coordinates);
+
+                const map = new maplibregl.Map({
+                    container: "map",
+                    style: "https://tiles.openfreemap.org/styles/bright",
+                    center: coordinates,
+                    zoom: 9
+                });
+
+                const popup = new maplibregl.Popup({ offset: 25 })
+                    .setHTML(`
+            <h5><%= listing.title %></h5>
+            <p><%= listing.location %></p>
+        `);
+
+                new maplibregl.Marker()
+                    .setLngLat(coordinates)
+                    .setPopup(popup)
+                    .addTo(map);
+
+            </script>
+
             </body>
