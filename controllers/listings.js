@@ -9,13 +9,54 @@ module.exports.renderNewForm = (req, res) => {
     res.render("listings/new.ejs");
 }
 
+// module.exports.createListing = async (req, res, next) => {
+//     let url = req.file.path;
+//     let filename = req.file.filename;
+//     const newListing = new Listing(req.body.listing);
+//     newListing.owner = req.user._id;
+//     newListing.image = { filename, url };
+//     await newListing.save();
+//     req.flash("success", "Successfully created a new listing!");
+//     res.redirect("/listings");
+// }
 module.exports.createListing = async (req, res, next) => {
+
     let url = req.file.path;
     let filename = req.file.filename;
+
+    const location = req.body.listing.location;
+
+    const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(location)}`,
+        {
+            headers: {
+                "User-Agent": "LifeInVastu-PersonalProject/1.0"
+            }
+        }
+    );
+
+    const data = await response.json();
+
+    if (data.length === 0) {
+        req.flash("error", "Location not found!");
+        return res.redirect("/listings/new");
+    }
+
+    const longitude = parseFloat(data[0].lon);
+    const latitude = parseFloat(data[0].lat);
+
     const newListing = new Listing(req.body.listing);
+
     newListing.owner = req.user._id;
     newListing.image = { filename, url };
+
+    newListing.geometry = {
+        type: "Point",
+        coordinates: [longitude, latitude]
+    };
+
     await newListing.save();
+
     req.flash("success", "Successfully created a new listing!");
     res.redirect("/listings");
 }
