@@ -1,4 +1,7 @@
 {
+  "engines": {
+    "node": "24.12.0"
+  },
   "name": "lifeinvastu",
   "version": "1.0.0",
   "description": "Hotel searching web app",
@@ -21,6 +24,7 @@
   "dependencies": {
     "cloudinary": "^2.11.0",
     "connect-flash": "^0.1.1",
+    "connect-mongo": "^6.0.0",
     "dotenv": "^17.4.2",
     "ejs": "^5.0.1",
     "ejs-mate": "^4.0.0",
