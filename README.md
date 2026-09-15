@@ -1,2 +1,2 @@
 # LifeInVastu
-Hotel searching web app
+Property searching web app
